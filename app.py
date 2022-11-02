@@ -66,7 +66,11 @@ def sign(filePath, keyPath):
     fileName = os.path.basename(filePath)
     savedFileName = 'signed_' + fileName
 
-    savedFilePath = '\\'.join(filePath.split('\\')[:-1]) + '\\' + savedFileName
+    savedFilePath = '\\'.join(filePath.split('\\')[:-1]) + '\\'
+    if savedFilePath != '\\':
+        savedFilePath += savedFileName
+    else:
+        savedFilePath = savedFileName   
 
     with open(savedFilePath, 'wb') as signed:
         signed.write(byteStream+signature)
