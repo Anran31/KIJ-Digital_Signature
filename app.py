@@ -48,13 +48,30 @@ def checkFiles(pathList):
 
 
 def sign(filePath, keyPath):
-    check_res = checkFiles([filePath, keyPath])
-    if check_res == -1:
+    if not checkFiles([filePath, keyPath]):
         return -1
-    elif check_res == 0:
-        return 0
 
-    # Sign the file
+    with open(filePath, 'rb') as in_file:
+        byteStream = in_file.read()
+
+    key = RSA.import_key(open(keyPath).read())
+    h = SHA256.new(byteStream)
+    signer = pss.new(key)
+
+    try:
+        signature = signer.sign(h)
+    except:
+        return -2
+
+    fileName = os.path.basename(filePath)
+    savedFileName = 'signed_' + fileName
+
+    savedFilePath = '\\'.join(filePath.split('\\')[:-1]) + '\\' + savedFileName
+
+    with open(savedFilePath, 'wb') as signed:
+        signed.write(byteStream+signature)
+
+    return 2
 
 
 def verify(filePath, keyPath):
