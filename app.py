@@ -37,12 +37,11 @@ def generate_key_pair():
     return 1
 
 
-
 def checkFiles(pathList):
     for path in pathList:
         if not os.path.isfile(path):
             return -1
-        if path[-3:] not in ['pdf', 'pem']:
+        if path[-3:].lower() not in ['pdf', 'pem']:
             return 0
     return 1
 
@@ -70,7 +69,7 @@ def sign(filePath, keyPath):
     if savedFilePath != '\\':
         savedFilePath += savedFileName
     else:
-        savedFilePath = savedFileName   
+        savedFilePath = savedFileName
 
     with open(savedFilePath, 'wb') as signed:
         signed.write(byteStream+signature)
