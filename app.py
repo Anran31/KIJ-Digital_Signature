@@ -79,13 +79,23 @@ def sign(filePath, keyPath):
 
 
 def verify(filePath, keyPath):
-    check_res = checkFiles([filePath, keyPath])
-    if check_res == -1:
+    if not checkFiles([filePath, keyPath]):
         return -1
-    elif check_res == 0:
-        return 0
 
-    # Verify the file
+    with open(filePath, 'rb') as in_file:
+        byteStream = in_file.read()
+        doc_signature = byteStream[-SIGN_LEN:]
+        byteStream = byteStream[:-SIGN_LEN]
+
+    pub_key = RSA.import_key(open(keyPath).read())
+    h = SHA256.new(byteStream)
+    verifier = pss.new(pub_key)
+
+    try:
+        verifier.verify(h, doc_signature)
+        return 3
+    except:
+        return -3
 
 
 COMMANDS = {
