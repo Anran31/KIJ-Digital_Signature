@@ -26,7 +26,16 @@ def print_command():
 
 
 def generate_key_pair():
-    pass
+    privateKey = RSA.generate(2048)
+    with open('private_key.pem', 'wb') as priv_key:
+        priv_key.write(privateKey.export_key('PEM'))
+
+    publicKey = privateKey.publickey()
+    with open('public_key.pem', 'wb') as pub_key:
+        pub_key.write(publicKey.export_key('PEM'))
+
+    return 1
+
 
 
 def checkFiles(pathList):
